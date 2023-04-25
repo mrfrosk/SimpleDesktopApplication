@@ -1,10 +1,7 @@
 
 import Service.login
 import Service.registrationUser
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -15,7 +12,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
@@ -32,7 +28,6 @@ enum class PagesList {
 fun loginPage(screenState: MutableState<PagesList>) {
     var userField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
-    val wrongInputMessage by remember { mutableStateOf("") }
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxHeight().align(Alignment.CenterHorizontally)) {
             Column(
@@ -133,7 +128,7 @@ fun mainPage(screenState: MutableState<PagesList>) {
     val weights = List(size) { 1f }
 
     Column {
-        table(headers, tableData, weights, 0.9f)
+        tableView(headers, tableData, weights, 0.9f)
         Button({ screenState.value = PagesList.Login }) {
             Text("Выйти")
         }
@@ -141,41 +136,4 @@ fun mainPage(screenState: MutableState<PagesList>) {
 
 }
 
-@Composable
-fun RowScope.TableCell(text: String, weight: Float) {
-    Text(
-        text = text,
-        modifier = Modifier.border(1.dp, Color.Black)
-            .weight(weight)
-            .padding(8.dp)
-    )
-}
 
-@Composable
-fun table(
-    headers: List<String>,
-    data: List<List<String>>,
-    weights: List<Float> = List(headers.size) { 0.5f },
-    maxHeight: Float
-) {
-    if (headers.size != data[0].size || headers.size != weights.size) {
-        throw Exception("количество полей в header, cellWeights или в таблице не совпадает")
-    }
-    Column(Modifier.fillMaxHeight(maxHeight)) {
-        Row {
-            for (i in headers.indices) {
-                TableCell(headers[i], weights[i])
-            }
-        }
-
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            for (row in data) {
-                Row {
-                    for (i in row.indices) {
-                        TableCell(row[i], weights[i])
-                    }
-                }
-            }
-        }
-    }
-}

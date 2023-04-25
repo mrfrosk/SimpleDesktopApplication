@@ -1,11 +1,12 @@
 package Service
 
 import DB.User
+import hashAlgorithm
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
-const val hashAlgorithm = "SHA-512"
+
 val connect = Database.connect("jdbc:sqlite:data.db", "org.sqlite.JDBC")
 
 fun initDb() = transaction {

@@ -1,3 +1,4 @@
+
 import Service.login
 import Service.registrationUser
 import androidx.compose.foundation.border
@@ -131,14 +132,14 @@ fun mainPage(screenState: MutableState<PagesList>) {
     val tableData = List(50) { List(size) { "tableItem $it" } }
     val weights = List(size) { 1f }
 
-    Column(Modifier.verticalScroll(rememberScrollState()).fillMaxHeight()) {
-        table(headers, tableData, weights)
+    Column {
+        table(headers, tableData, weights, 0.9f)
         Button({ screenState.value = PagesList.Login }) {
             Text("Выйти")
         }
     }
-}
 
+}
 
 @Composable
 fun RowScope.TableCell(text: String, weight: Float) {
@@ -153,24 +154,25 @@ fun RowScope.TableCell(text: String, weight: Float) {
 @Composable
 fun table(
     headers: List<String>,
-    tableData: List<List<String>>,
-    cellWeights: List<Float> = List(headers.size) { 0.5f }
+    data: List<List<String>>,
+    weights: List<Float> = List(headers.size) { 0.5f },
+    maxHeight: Float
 ) {
-    if (headers.size != tableData[0].size || headers.size != cellWeights.size) {
-        throw Exception("количество полей в header, cellWeights или в таблице")
+    if (headers.size != data[0].size || headers.size != weights.size) {
+        throw Exception("количество полей в header, cellWeights или в таблице не совпадает")
     }
-    Column {
+    Column(Modifier.fillMaxHeight(maxHeight)) {
         Row {
             for (i in headers.indices) {
-                TableCell(headers[i], cellWeights[i])
+                TableCell(headers[i], weights[i])
             }
         }
 
-        Column(Modifier.height(289.dp).verticalScroll(rememberScrollState())) {
-            for (row in tableData) {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            for (row in data) {
                 Row {
                     for (i in row.indices) {
-                        TableCell(row[i], cellWeights[i])
+                        TableCell(row[i], weights[i])
                     }
                 }
             }

@@ -21,10 +21,8 @@ fun App() {
 
 
 fun main() = application {
-//    initDb()
     Window(onCloseRequest = ::exitApplication) {
         App()
-
     }
 
 }

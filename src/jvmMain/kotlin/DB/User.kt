@@ -7,4 +7,6 @@ object User: IntIdTable() {
     val email = varchar("email", defaultLength).uniqueIndex()
     val username = varchar("username", defaultLength).uniqueIndex()
     val password = varchar("password", defaultLength)
+    val isAdmin = bool("is_admin")
 }
+

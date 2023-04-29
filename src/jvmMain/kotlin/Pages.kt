@@ -48,7 +48,7 @@ class Authentication {
                             },
                         )
                     }
-                    Spacer(Modifier.height(columnSpace))
+                    Spacer(Modifier.height(5.dp))
                     Row(rowBasicModifier, rowBasicArrangement) {
                         OutlinedTextField(
                             passwordField,
@@ -143,7 +143,6 @@ fun adminPage(screenState: MutableState<PagesList>) {
     var discount by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
     var notificationMessage by remember { mutableStateOf("") }
-    val text = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     val customers = getCustomers()
     val services = getServices()
@@ -151,7 +150,7 @@ fun adminPage(screenState: MutableState<PagesList>) {
     val serviceDropDownText = remember { mutableStateOf(services.firstOrNull()?:"") }
 
     Column {
-        tableView(headers, tableData, weights, 0.56f)
+        tableView(headers, tableData, weights, 0.46f)
         Spacer(Modifier.height(20.dp))
         Row(Modifier.fillMaxHeight(0.3f)) {
             OutlinedTextField(
@@ -164,8 +163,9 @@ fun adminPage(screenState: MutableState<PagesList>) {
             )
             Button({
                 notificationMessage = if (!isMatchingRegExp(date)) {
-                    "Введенная вами строка в поле 'дата' не соответствует виду dd-dd-dddd"
+                    "Введенная вами строка в поле 'дата' не соответствует виду dddd-dd-dd"
                 } else {
+                    addOrder(customersDropDownText.value, date, price, isChecked)
                     ""
                 }
             }) {
@@ -206,9 +206,14 @@ fun adminPage(screenState: MutableState<PagesList>) {
                 }
             }, label = { Text("Скидка") })
         }
+        Row{
+            Button({ screenState.value = PagesList.AddServicePage }) {
+                Text("Добавить услугу")
+            }
 
-        Button({ screenState.value = PagesList.Login }) {
-            Text("Выйти")
+            Button({ screenState.value = PagesList.Login }) {
+                Text("Выйти")
+            }
         }
         Text(notificationMessage, Modifier.align(Alignment.CenterHorizontally))
     }
@@ -231,13 +236,20 @@ fun clientAdd(screenState: MutableState<PagesList>) {
                 }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     Text("сохранить")
                 }
+                Row {
+                    Button({ screenState.value = PagesList.Login }) {
+                        Text("Выйти")
+                    }
+                }
             }
         }
+
+
     }
 }
 
 @Composable
-fun addService(currentScreen: MutableState<PagesList>){
+fun addService(screenState: MutableState<PagesList>){
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize()) {
@@ -247,10 +259,21 @@ fun addService(currentScreen: MutableState<PagesList>){
         Row {
             OutlinedTextField(description, {description = it}, label = { Text("Описание") })
         }
-        Button({
-            insertService(name, description)
-        }){
-            Text("Сохранить услугу")
+        Row{
+            Button({
+                insertService(name, description)
+            }){
+                Text("Сохранить услугу")
+            }
+            Button({ screenState.value = PagesList.AdminPage}) {
+                Text("Добавить Заказ")
+            }
+            Button({ screenState.value = PagesList.Login }) {
+                Text("Выйти")
+            }
+
+
+
         }
     }
 }

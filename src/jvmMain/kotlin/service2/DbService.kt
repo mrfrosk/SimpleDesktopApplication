@@ -5,9 +5,11 @@ import DB.Order
 import DB.Service
 import DB.User
 import hashAlgorithm
+import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDate
 
 
 val connect = Database.connect("jdbc:sqlite:data.db", "org.sqlite.JDBC")
@@ -55,7 +57,7 @@ fun addCustomer(name: String, address: String, phone: String) {
     }
 }
 
-fun insertService(name: String, description: String){
+fun insertService(name: String, description: String) {
     transaction {
         Service.insert {
             it[Service.name] = name
@@ -64,7 +66,7 @@ fun insertService(name: String, description: String){
     }
 }
 
-fun getServices(): List<String>{
+fun getServices(): List<String> {
     return transaction {
         Service.selectAll().map { it[Service.name] }
     }
@@ -97,7 +99,21 @@ fun getCustomers(): List<String> = transaction {
     }
 }
 
-fun addOrder(){
+fun addOrder(customer: String, date: String, price: String, isExecuted: Boolean) {
+    transaction {
+        Order.insert {
+            it[Order.customer] = customer
+            it[Order.date] = LocalDate.parse(date).toKotlinLocalDate()
+            it[Order.price] = price.toIntOrNull() ?: 0
+            it[Order.isExecuted] = isExecuted
+        }
+    }
+}
 
+fun getOrder() {
+    return transaction {
+        Order.selectAll()
+            .map { listOf(it[Order.id], it[Order.price], it[Order.customer], it[Order.date], it[Order.isExecuted]) }
+    }
 }
 

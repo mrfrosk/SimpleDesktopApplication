@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 fun isMatchingRegExp(string: String): Boolean {
-    return Regex("\\d{2}-\\d{2}-\\d{4}").matches(string)
+    return Regex("\\d{4}-\\d{2}-\\d{2}").matches(string)
 }
 
 @Composable

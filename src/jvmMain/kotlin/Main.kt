@@ -11,21 +11,29 @@ import service2.initDb
 @Composable
 @Preview
 fun App() {
-    val currentScreen = remember { mutableStateOf(PagesList.Login) }
+    val currentScreen = remember { mutableStateOf(PagesList.AdminPage) }
     val authentication = Authentication()
     when (currentScreen.value) {
         PagesList.Login -> authentication.loginPage(currentScreen)
         PagesList.Registration -> authentication.registrationPage(currentScreen)
-        PagesList.UserPage -> userPage(currentScreen)
+        PagesList.UserPage -> clientAdd(currentScreen)
         PagesList.AdminPage -> adminPage(currentScreen)
+        PagesList.AddServicePage -> addService(currentScreen)
     }
 }
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+fun main() {
+    application {
+        Window(onCloseRequest = ::exitApplication) {
         initDb()
-        App()
+            App()
+        }
     }
+//    getService().forEach {
+//        println(it.joinToString())
+//    }
 }
+
+
 
 

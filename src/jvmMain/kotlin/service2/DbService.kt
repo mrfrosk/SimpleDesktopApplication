@@ -45,13 +45,28 @@ fun registrationUser(email: String, username: String, password: String, isAdmin:
     return false
 }
 
-fun addCustomer(name: String, address: String, phone: String){
+fun addCustomer(name: String, address: String, phone: String) {
     transaction {
         Customer.insert {
             it[Customer.name] = name
             it[Customer.address] = address
             it[Customer.phone] = phone
         }
+    }
+}
+
+fun insertService(name: String, description: String){
+    transaction {
+        Service.insert {
+            it[Service.name] = name
+            it[Service.description] = description
+        }
+    }
+}
+
+fun getServices(): List<String>{
+    return transaction {
+        Service.selectAll().map { it[Service.name] }
     }
 }
 
@@ -74,5 +89,15 @@ fun login(username: String, password: String): Pair<Boolean, Boolean> {
     } else {
         Pair(false, false)
     }
+}
+
+fun getCustomers(): List<String> = transaction {
+    Customer.selectAll().map {
+        it[Customer.name]
+    }
+}
+
+fun addOrder(){
+
 }
 

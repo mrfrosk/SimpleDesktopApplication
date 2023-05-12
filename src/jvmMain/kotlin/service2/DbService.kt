@@ -110,10 +110,11 @@ fun addOrder(customer: String, date: String, price: String, isExecuted: Boolean)
     }
 }
 
-fun getOrder() {
+fun getOrder(): List<List<String>> {
     return transaction {
-        Order.selectAll()
-            .map { listOf(it[Order.id], it[Order.price], it[Order.customer], it[Order.date], it[Order.isExecuted]) }
+        Order.selectAll().toList()
+            .map { listOf(it[Order.id].toString(), it[Order.price].toString(),
+                it[Order.customer], it[Order.date].toString(), it[Order.isExecuted].toString()) }
     }
 }
 

@@ -133,24 +133,21 @@ class Authentication {
 
 @Composable
 fun adminPage(screenState: MutableState<PagesList>) {
-    val size = 10
-    val headers = List(size) { "item $it" }
-    val tableData = List(50) { List(size) { "tableItem $it" } }
-    val weights = List(size) { 1f }
     var date by remember { mutableStateOf("") }
     var number by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var discount by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
     var notificationMessage by remember { mutableStateOf("") }
-    val expanded = remember { mutableStateOf(false) }
+    val expandedService = remember { mutableStateOf(false) }
+    val expandedCustomer = remember { mutableStateOf(false) }
     val customers = getCustomers()
     val services = getServices()
     val customersDropDownText = remember { mutableStateOf(customers.firstOrNull()?:"") }
     val serviceDropDownText = remember { mutableStateOf(services.firstOrNull()?:"") }
 
     Column {
-        tableView(headers, tableData, weights, 0.46f)
+        tableView(listOf("id", "цена", "заказчик", "дата", "статус"), getOrder(), maxHeight =  0.46f)
         Spacer(Modifier.height(20.dp))
         Row(Modifier.fillMaxHeight(0.3f)) {
             OutlinedTextField(
@@ -159,7 +156,7 @@ fun adminPage(screenState: MutableState<PagesList>) {
                         number = it
                     }
                 },
-                label = { Text("Номер заказа") }
+                label = { Text("Номер заказа") }, modifier = Modifier.height(70.dp).padding(8.dp)
             )
             Button({
                 notificationMessage = if (!isMatchingRegExp(date)) {
@@ -168,7 +165,7 @@ fun adminPage(screenState: MutableState<PagesList>) {
                     addOrder(customersDropDownText.value, date, price, isChecked)
                     ""
                 }
-            }) {
+            }, modifier = Modifier.height(56.dp).padding(8.dp)) {
                 Text("Сохранить заказ")
             }
         }
@@ -185,13 +182,13 @@ fun adminPage(screenState: MutableState<PagesList>) {
         Row {
             Text("Клиент")
             Spacer(Modifier.width(5.dp))
-            createDropDownMenu(customersDropDownText, expanded, customers)
+            createDropDownMenu(customersDropDownText, expandedCustomer, getCustomers())
         }
 
         Row {
             Text("Услуга")
             Spacer(Modifier.width(5.dp))
-            createDropDownMenu(serviceDropDownText, expanded, services)
+            createDropDownMenu(serviceDropDownText, expandedService, getServices())
         }
 
         Row {
@@ -231,6 +228,7 @@ fun clientAdd(screenState: MutableState<PagesList>) {
                 OutlinedTextField(name, { name = it }, label = { Text("Наименование заказчика") })
                 OutlinedTextField(address, { address = it }, label = { Text("Адрес") })
                 OutlinedTextField(phone, { phone = it }, label = { Text("Телефон") })
+
                 Button({
                     addCustomer(name, address, phone)
                 }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
